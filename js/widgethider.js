@@ -424,20 +424,13 @@ function handleHiResFixScript(node, widget) {
         });
 
         // Always show the main toggle; hide/show dependents based on its value
-        toggleWidget(node, findWidgetByName(node, 'use_controlnet'), true);
-        if (findWidgetByName(node, 'use_controlnet').value === true){
-            toggleWidget(node, findWidgetByName(node, 'control_net_name'), true);
-            toggleWidget(node, findWidgetByName(node, 'strength'), true);
-            toggleWidget(node, findWidgetByName(node, 'preprocessor'), true);
-            const preImg = findWidgetByName(node, 'preprocessor_imgs');
-            if (preImg) { preImg.disabled = false; toggleWidget(node, preImg, true); }
-        } else {
-            toggleWidget(node, findWidgetByName(node, 'control_net_name'));
-            toggleWidget(node, findWidgetByName(node, 'strength'));
-            toggleWidget(node, findWidgetByName(node, 'preprocessor'));
-            const preImg = findWidgetByName(node, 'preprocessor_imgs');
-            if (preImg) { preImg.disabled = true; toggleWidget(node, preImg); }
-        }
+        const useCN = findWidgetByName(node, 'use_controlnet');
+        toggleWidget(node, useCN, true);
+        const cnOn = useCN && useCN.value === true;
+        toggleWidget(node, findWidgetByName(node, 'control_net_name'), cnOn);
+        toggleWidget(node, findWidgetByName(node, 'strength'), cnOn);
+        toggleWidget(node, findWidgetByName(node, 'preprocessor'), cnOn);
+        toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'), cnOn);
 
         // Final recompute to ensure size matches visible widgets with padding
         setTimeout(() => { recomputeNodeSize(node); }, 0);
@@ -458,8 +451,7 @@ function handleHiResFixScript(node, widget) {
         toggleWidget(node, findWidgetByName(node, 'control_net_name'));
         toggleWidget(node, findWidgetByName(node, 'strength'));
         toggleWidget(node, findWidgetByName(node, 'preprocessor'));
-        const preImgPix = findWidgetByName(node, 'preprocessor_imgs');
-        if (preImgPix) { preImgPix.disabled = true; toggleWidget(node, preImgPix); }
+        toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'));
 
         toggleWidget(node, findWidgetByName(node, 'pixel_upscaler'), true);
 
@@ -488,20 +480,13 @@ function handleHiResFixScript(node, widget) {
         });
 
         // Always show the main toggle; hide/show dependents based on its value
-        toggleWidget(node, findWidgetByName(node, 'use_controlnet'), true);
-        if (findWidgetByName(node, 'use_controlnet').value === true){
-            toggleWidget(node, findWidgetByName(node, 'control_net_name'), true);
-            toggleWidget(node, findWidgetByName(node, 'strength'), true);
-            toggleWidget(node, findWidgetByName(node, 'preprocessor'), true);
-            const preImg2 = findWidgetByName(node, 'preprocessor_imgs');
-            if (preImg2) { preImg2.disabled = false; toggleWidget(node, preImg2, true); }
-        } else {
-            toggleWidget(node, findWidgetByName(node, 'control_net_name'));
-            toggleWidget(node, findWidgetByName(node, 'strength'));
-            toggleWidget(node, findWidgetByName(node, 'preprocessor'));
-            const preImg2 = findWidgetByName(node, 'preprocessor_imgs');
-            if (preImg2) { preImg2.disabled = true; toggleWidget(node, preImg2); }
-        }
+        const useCN2 = findWidgetByName(node, 'use_controlnet');
+        toggleWidget(node, useCN2, true);
+        const cnOn2 = useCN2 && useCN2.value === true;
+        toggleWidget(node, findWidgetByName(node, 'control_net_name'), cnOn2);
+        toggleWidget(node, findWidgetByName(node, 'strength'), cnOn2);
+        toggleWidget(node, findWidgetByName(node, 'preprocessor'), cnOn2);
+        toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'), cnOn2);
 
         // Final recompute to ensure size matches visible widgets with padding
         setTimeout(() => { recomputeNodeSize(node); }, 0);
