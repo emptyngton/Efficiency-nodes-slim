@@ -2,6 +2,7 @@ import { app } from "../../scripts/app.js";
 
 let origProps = {};
 let initialized = false;
+const HIGHRES_MIN_HEIGHT = 480; // px
 
 const findWidgetByName = (node, name) => {
     return node.widgets ? node.widgets.find((w) => w.name === name) : null;
@@ -68,6 +69,15 @@ function recomputeNodeSize(node) {
         node.setSize([node.size[0], newHeight]);
         node.size[1] += 12;
         try { app.graph && app.graph.setDirtyCanvas(true, true); } catch (e) {}
+    } catch (e) { /* noop */ }
+}
+
+function setMinNodeHeight(node, minHeightPx) {
+    try {
+        if (node.size && typeof node.size[1] === 'number') {
+            node.size[1] = Math.max(node.size[1], minHeightPx);
+            try { app.graph && app.graph.setDirtyCanvas(true, true); } catch (e) {}
+        }
     } catch (e) { /* noop */ }
 }
 
@@ -438,8 +448,8 @@ function handleHiResFixScript(node, widget) {
             toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'));
         }
 
-        // Final recompute to ensure size matches visible widgets
-        setTimeout(() => recomputeNodeSize(node), 0);
+        // Final recompute and enforce minimum node height to prevent bottom spill
+        setTimeout(() => { recomputeNodeSize(node); setMinNodeHeight(node, HIGHRES_MIN_HEIGHT); }, 0);
 
     } else if (findWidgetByName(node, 'upscale_type').value === "pixel") {
         toggleWidget(node, findWidgetByName(node, 'hires_ckpt_name'));
@@ -461,8 +471,8 @@ function handleHiResFixScript(node, widget) {
 
         toggleWidget(node, findWidgetByName(node, 'pixel_upscaler'), true);
 
-        // Final recompute to ensure size matches visible widgets
-        setTimeout(() => recomputeNodeSize(node), 0);
+        // Final recompute and enforce minimum node height to prevent bottom spill
+        setTimeout(() => { recomputeNodeSize(node); setMinNodeHeight(node, HIGHRES_MIN_HEIGHT); }, 0);
         
     } else if (findWidgetByName(node, 'upscale_type').value === "both") {
         toggleWidget(node, findWidgetByName(node, 'pixel_upscaler'), true);
@@ -499,8 +509,8 @@ function handleHiResFixScript(node, widget) {
             toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'));
         }
 
-        // Final recompute to ensure size matches visible widgets
-        setTimeout(() => recomputeNodeSize(node), 0);
+        // Final recompute and enforce minimum node height to prevent bottom spill
+        setTimeout(() => { recomputeNodeSize(node); setMinNodeHeight(node, HIGHRES_MIN_HEIGHT); }, 0);
     }
 }
 
