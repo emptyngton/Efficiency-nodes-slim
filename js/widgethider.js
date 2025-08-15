@@ -2,7 +2,7 @@ import { app } from "../../scripts/app.js";
 
 let origProps = {};
 let initialized = false;
-const PADDING_BOTTOM = 20; // px
+const PADDING_BOTTOM = 0; // px
 
 const findWidgetByName = (node, name) => {
     return node.widgets ? node.widgets.find((w) => w.name === name) : null;
@@ -68,7 +68,7 @@ function toggleWidget_2(node, widget, show = false, suffix = "") {
 function recomputeNodeSize(node) {
     try {
         const newHeight = node.computeSize()[1];
-        node.setSize([node.size[0], newHeight + PADDING_BOTTOM]);
+        node.setSize([node.size[0], newHeight]);
         try { app.graph && app.graph.setDirtyCanvas(true, true); } catch (e) {}
     } catch (e) { /* noop */ }
 }
