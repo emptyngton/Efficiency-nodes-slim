@@ -429,12 +429,14 @@ function handleHiResFixScript(node, widget) {
             toggleWidget(node, findWidgetByName(node, 'control_net_name'), true);
             toggleWidget(node, findWidgetByName(node, 'strength'), true);
             toggleWidget(node, findWidgetByName(node, 'preprocessor'), true);
-            toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'), true);
+            const preImg = findWidgetByName(node, 'preprocessor_imgs');
+            if (preImg) { preImg.disabled = false; toggleWidget(node, preImg, true); }
         } else {
             toggleWidget(node, findWidgetByName(node, 'control_net_name'));
             toggleWidget(node, findWidgetByName(node, 'strength'));
             toggleWidget(node, findWidgetByName(node, 'preprocessor'));
-            toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'));
+            const preImg = findWidgetByName(node, 'preprocessor_imgs');
+            if (preImg) { preImg.disabled = true; toggleWidget(node, preImg); }
         }
 
         // Final recompute to ensure size matches visible widgets with padding
@@ -456,7 +458,8 @@ function handleHiResFixScript(node, widget) {
         toggleWidget(node, findWidgetByName(node, 'control_net_name'));
         toggleWidget(node, findWidgetByName(node, 'strength'));
         toggleWidget(node, findWidgetByName(node, 'preprocessor'));
-        toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'));
+        const preImgPix = findWidgetByName(node, 'preprocessor_imgs');
+        if (preImgPix) { preImgPix.disabled = true; toggleWidget(node, preImgPix); }
 
         toggleWidget(node, findWidgetByName(node, 'pixel_upscaler'), true);
 
@@ -490,12 +493,14 @@ function handleHiResFixScript(node, widget) {
             toggleWidget(node, findWidgetByName(node, 'control_net_name'), true);
             toggleWidget(node, findWidgetByName(node, 'strength'), true);
             toggleWidget(node, findWidgetByName(node, 'preprocessor'), true);
-            toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'), true);
+            const preImg2 = findWidgetByName(node, 'preprocessor_imgs');
+            if (preImg2) { preImg2.disabled = false; toggleWidget(node, preImg2, true); }
         } else {
             toggleWidget(node, findWidgetByName(node, 'control_net_name'));
             toggleWidget(node, findWidgetByName(node, 'strength'));
             toggleWidget(node, findWidgetByName(node, 'preprocessor'));
-            toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'));
+            const preImg2 = findWidgetByName(node, 'preprocessor_imgs');
+            if (preImg2) { preImg2.disabled = true; toggleWidget(node, preImg2); }
         }
 
         // Final recompute to ensure size matches visible widgets with padding
