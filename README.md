@@ -1,7 +1,7 @@
 ✨🍬Planning to help this branch stay alive and any issues will try to solve or fix .. But will be slow as I run many github repos . before raising any issues, please update comfyUI to the latest and esnure all the required packages are updated ass well. Share your workflow in issues to retest same at our end and update the patch.🍬
 
 
-<b> Efficiency Nodes for ComfyUI Version 2.0+
+<b> Efficiency Nodes (refactor minimal set)
 =======
 ### A collection of <a href="https://github.com/comfyanonymous/ComfyUI" >ComfyUI</a> custom nodes to help streamline workflows and reduce total node count.
 ## Releases
@@ -9,10 +9,10 @@
 Please check out our WIKI for any use cases and new developments including workflow and settings.<br>
 [Efficiency Nodes Wiki](https://github.com/jags111/efficiency-nodes-comfyui/wiki)<br>
 
-### Nodes:
+### Included Nodes in this refactor:
 <!-------------------------------------------------------------------------------------------------------------------------------------------------------->
 <details>
-    <summary><b>Efficient Loader</b> & <b>Eff. Loader SDXL</b></summary>
+    <summary><b>Efficient Loader</b></summary>
 <ul>
     <li>Nodes that can load & cache Checkpoint, VAE, & LoRA type models. <i>(cache settings found in config file 'node_settings.json')</i></li>
     <li>Able to apply LoRA & Control Net stacks via their <code>lora_stack</code> and <code>cnet_stack</code> inputs.</li>
@@ -30,7 +30,7 @@ Please check out our WIKI for any use cases and new developments including workf
 </details>
 <!-------------------------------------------------------------------------------------------------------------------------------------------------------->
 <details>
-    <summary><b>KSampler (Efficient)</b>, <b>KSampler Adv. (Efficient)</b>, <b>KSampler SDXL (Eff.)</b></summary>
+    <summary><b>KSampler (Efficient)</b></summary>
 
 - Modded KSamplers with the ability to live preview generations and/or vae decode images.
 - Feature a special seed box that allows for a clearer management of seeds. <i>(-1 seed to apply the selected seed behavior)</i>
@@ -47,7 +47,7 @@ Please check out our WIKI for any use cases and new developments including workf
 </details>
 <!-------------------------------------------------------------------------------------------------------------------------------------------------------->
 <details>
-    <summary><b>Script Nodes</b></summary>
+    <summary><b>HighRes-Fix</b></summary>
     
 - A group of node's that are used in conjuction with the Efficient KSamplers to execute a variety of 'pre-wired' set of actions.
 - Script nodes can be chained if their input/outputs allow it. Multiple instances of the same Script Node in a chain does nothing.
@@ -55,19 +55,7 @@ Please check out our WIKI for any use cases and new developments including workf
       <img src="https://github.com/LucianoCirino/efficiency-nodes-media/blob/main/images/nodes/ScriptChain.png" width="1080">
     </p>
     <!-------------------------------------------------------------------------------------------------------------------------------------------------------->
-    <details>
-        <summary><b>XY Plot</b></summary>
-    <ul>
-        <li>Node that allows users to specify parameters for the Efficiency KSamplers to plot on a grid.</li>
-    </ul>
-    <p align="center">
-      <img src="https://github.com/LucianoCirino/efficiency-nodes-media/blob/main/images/nodes/XY%20Plot%20-%20Node%20Example.png" width="1080">
-    </p>
     
-    </details>
-    <!-------------------------------------------------------------------------------------------------------------------------------------------------------->
-    <details>
-        <summary><b>HighRes-Fix</b></summary>
     <ul>
         <li>Node that the gives user the ability to upscale KSampler results through variety of different methods.</li>
         <li>Comes out of the box with popular Neural Network Latent Upscalers such as Ttl's <a href="https://github.com/Ttl/ComfyUi_NNLatentUpscale">ComfyUi_NNLatentUpscale</a> and City96's <a href="https://github.com/city96/SD-Latent-Upscaler">SD-Latent-Upscaler</a>.</li>
@@ -78,47 +66,7 @@ Please check out our WIKI for any use cases and new developments including workf
       <img src="https://github.com/LucianoCirino/efficiency-nodes-media/blob/main/images/nodes/HighResFix%20-%20Node%20Example.gif" width="1080">
     </p>
     
-    </details>
-    <!-------------------------------------------------------------------------------------------------------------------------------------------------------->
-    <details>
-        <summary><b>Noise Control</b></summary>
-    <ul>
-        <li>This node gives the user the ability to manipulate noise sources in a variety of ways, such as the sampling's RNG source.</li>
-        <li>The <a href="https://github.com/shiimizu/ComfyUI_smZNodes">CFG Denoiser</a> noise hijack was developed by smZ, it allows you to get closer recreating Automatic1111 results.</li>
-            <p></p><i>Note: The CFG Denoiser does not work with a variety of conditioning types such as ControlNet & GLIGEN</i></p>
-        <li>This node also allows you to add noise <a href="https://github.com/chrisgoringe/cg-noise">Seed Variations</a> to your generations.</li>
-        <li>For trying to replicate Automatic1111 images, this node will help you achieve it. Encode your prompt using "length+mean" <code>token_normalization</code> with "A1111" <code>weight_interpretation</code>, set the Noise Control Script node's <code>rng_source</code> to "gpu", and turn the <code>cfg_denoiser</code> to true.</li>
-    </ul>
-    <p align="center">
-      <img src="https://github.com/LucianoCirino/efficiency-nodes-media/blob/main/images/nodes/NODE%20-%20Noise%20Control%20Script.png" width="320">
-    </p>
     
-    </details>
-    <!-------------------------------------------------------------------------------------------------------------------------------------------------------->
-    <details>
-        <summary><b>Tiled Upscaler</b></summary>
-    <ul>
-        <li>The Tiled Upscaler script attempts to encompas BlenderNeko's <a href="https://github.com/BlenderNeko/ComfyUI_TiledKSampler">ComfyUI_TiledKSampler</a> workflow into 1 node.</li>
-        <li>Script supports Tiled ControlNet help via the options.</li>
-        <li>Strongly recommend the <code>preview_method</code> be "vae_decoded_only" when running the script.</li>
-    </ul>
-    <p align="center">
-      <img src="https://github.com/LucianoCirino/efficiency-nodes-media/blob/main/images/nodes/Tiled%20Upscaler%20-%20Node%20Example.gif" width="1080">
-    </p>
-    
-    </details>
-        <!-------------------------------------------------------------------------------------------------------------------------------------------------------->
-    <details>
-        <summary><b>AnimateDiff</b></summary>
-    <ul>
-        <li>To unlock the AnimateDiff script it is required you have installed Kosinkadink's <a href="https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved">ComfyUI-AnimateDiff-Evolved</a>.</li>
-        <li>The latent <code>batch_size</code> when running this script becomes your frame count.</li>
-    </ul>
-    <p align="center">
-      <img src="https://github.com/LucianoCirino/efficiency-nodes-media/blob/main/images/nodes/AnimateDiff%20-%20Node%20Example.gif" width="1080">
-    </p>
-    
-    </details>
 </details>
 
 <!-------------------------------------------------------------------------------------------------------------------------------------------------------->
