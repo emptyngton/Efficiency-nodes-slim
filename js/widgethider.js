@@ -56,10 +56,15 @@ function toggleWidget_2(node, widget, show = false, suffix = "") {
 
     widget.type = show ? origProps[widget.name].origType : HIDDEN_TAG + suffix;
     widget.computeSize = show ? origProps[widget.name].origComputeSize : () => [0, -4];
+    try { widget.hidden = !show; } catch (e) {}
+    try { widget.disabled = !show; } catch (e) {}
 
     if (initialized){
-        const adjustment = show ? WIDGET_HEIGHT : -WIDGET_HEIGHT;
-        node.setSize([node.size[0], node.size[1] + adjustment]);
+        // Recompute full node size to account for multiline widgets instead of a fixed step
+        try {
+            const newHeight = node.computeSize()[1];
+            node.setSize([node.size[0], newHeight]);
+        } catch (e) {}
         try { app.graph && app.graph.setDirtyCanvas(true, true); } catch (e) {}
     }
 }
@@ -351,6 +356,8 @@ function handleEfficientLoaderLoraName(node, widget) {
         toggleWidget_2(node, findWidgetByName(node, 'lora_model_strength'), true);
         toggleWidget_2(node, findWidgetByName(node, 'lora_clip_strength'), true);
     }
+    // Ensure layout is recomputed to prevent overlaps with multiline fields
+    setTimeout(() => { recomputeNodeSize(node); }, 0);
 }
 
 // Eff. Loader SDXL Handlers
