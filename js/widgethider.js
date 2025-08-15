@@ -34,6 +34,8 @@ function toggleWidget(node, widget, show = false, suffix = "") {
     // Calculate the new height for the node based on its computeSize method
     const newHeight = node.computeSize()[1];
     node.setSize([node.size[0], newHeight]);
+    // Account for a small footer margin to avoid last widget being partially hidden
+    node.size[1] += 6;
 }
 
 const WIDGET_HEIGHT = 24;
@@ -55,6 +57,14 @@ function toggleWidget_2(node, widget, show = false, suffix = "") {
         const adjustment = show ? WIDGET_HEIGHT : -WIDGET_HEIGHT;
         node.setSize([node.size[0], node.size[1] + adjustment]);
     }
+}
+
+// Recompute node height to prevent widgets spilling outside the node area
+function recomputeNodeSize(node) {
+    try {
+        const newHeight = node.computeSize()[1];
+        node.setSize([node.size[0], newHeight]);
+    } catch (e) { /* noop */ }
 }
 
 // New function to handle widget visibility based on input_mode
@@ -434,6 +444,9 @@ function handleHiResFixScript(node, widget) {
             }
         }
 
+        // Final recompute to ensure size matches visible widgets
+        setTimeout(() => recomputeNodeSize(node), 0);
+
     } else if (findWidgetByName(node, 'upscale_type').value === "pixel") {
         toggleWidget(node, findWidgetByName(node, 'hires_ckpt_name'));
         toggleWidget(node, findWidgetByName(node, 'latent_upscaler'));
@@ -453,6 +466,9 @@ function handleHiResFixScript(node, widget) {
         toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'));
 
         toggleWidget(node, findWidgetByName(node, 'pixel_upscaler'), true);
+
+        // Final recompute to ensure size matches visible widgets
+        setTimeout(() => recomputeNodeSize(node), 0);
         
     } else if (findWidgetByName(node, 'upscale_type').value === "both") {
         toggleWidget(node, findWidgetByName(node, 'pixel_upscaler'), true);
@@ -498,6 +514,9 @@ function handleHiResFixScript(node, widget) {
                 toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'));
             }
         }
+
+        // Final recompute to ensure size matches visible widgets
+        setTimeout(() => recomputeNodeSize(node), 0);
     }
 }
 
