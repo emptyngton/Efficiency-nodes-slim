@@ -36,6 +36,7 @@ function toggleWidget(node, widget, show = false, suffix = "") {
     node.setSize([node.size[0], newHeight]);
     // Account for a small footer margin to avoid last widget being partially hidden
     node.size[1] += 6;
+    try { app.graph && app.graph.setDirtyCanvas(true, true); } catch (e) {}
 }
 
 const WIDGET_HEIGHT = 24;
@@ -56,6 +57,7 @@ function toggleWidget_2(node, widget, show = false, suffix = "") {
     if (initialized){
         const adjustment = show ? WIDGET_HEIGHT : -WIDGET_HEIGHT;
         node.setSize([node.size[0], node.size[1] + adjustment]);
+        try { app.graph && app.graph.setDirtyCanvas(true, true); } catch (e) {}
     }
 }
 
@@ -64,6 +66,8 @@ function recomputeNodeSize(node) {
     try {
         const newHeight = node.computeSize()[1];
         node.setSize([node.size[0], newHeight]);
+        node.size[1] += 12;
+        try { app.graph && app.graph.setDirtyCanvas(true, true); } catch (e) {}
     } catch (e) { /* noop */ }
 }
 
@@ -434,13 +438,22 @@ function handleHiResFixScript(node, widget) {
                 toggleWidget(node, findWidgetByName(node, 'control_net_name'), true);
                 toggleWidget(node, findWidgetByName(node, 'strength'), true);
                 toggleWidget(node, findWidgetByName(node, 'preprocessor'), true);
-                toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'), true);
+                // Ensure the boolean toggle is interactive and visible
+                const preImg = findWidgetByName(node, 'preprocessor_imgs');
+                if (preImg) {
+                    preImg.disabled = false;
+                    toggleWidget(node, preImg, true);
+                }
             }
             else{
                 toggleWidget(node, findWidgetByName(node, 'control_net_name'));
                 toggleWidget(node, findWidgetByName(node, 'strength'));
                 toggleWidget(node, findWidgetByName(node, 'preprocessor'));
-                toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'));
+                const preImg = findWidgetByName(node, 'preprocessor_imgs');
+                if (preImg) {
+                    preImg.disabled = true;
+                    toggleWidget(node, preImg);
+                }
             }
         }
 
@@ -505,13 +518,21 @@ function handleHiResFixScript(node, widget) {
                 toggleWidget(node, findWidgetByName(node, 'control_net_name'), true);
                 toggleWidget(node, findWidgetByName(node, 'strength'), true);
                 toggleWidget(node, findWidgetByName(node, 'preprocessor'), true);
-                toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'), true);
+                const preImg = findWidgetByName(node, 'preprocessor_imgs');
+                if (preImg) {
+                    preImg.disabled = false;
+                    toggleWidget(node, preImg, true);
+                }
             }
             else{
                 toggleWidget(node, findWidgetByName(node, 'control_net_name'));
                 toggleWidget(node, findWidgetByName(node, 'strength'));
                 toggleWidget(node, findWidgetByName(node, 'preprocessor'));
-                toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'));
+                const preImg = findWidgetByName(node, 'preprocessor_imgs');
+                if (preImg) {
+                    preImg.disabled = true;
+                    toggleWidget(node, preImg);
+                }
             }
         }
 
