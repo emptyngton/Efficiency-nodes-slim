@@ -424,37 +424,18 @@ function handleHiResFixScript(node, widget) {
             }
         });
 
-        if (findWidgetByName(node, 'use_controlnet').value == '_' || findWidgetByName(node, 'use_controlnet').value == false){
-            toggleWidget(node, findWidgetByName(node, 'use_controlnet'));
+        // Always show the main toggle; hide/show dependents based on its value
+        toggleWidget(node, findWidgetByName(node, 'use_controlnet'), true);
+        if (findWidgetByName(node, 'use_controlnet').value === true){
+            toggleWidget(node, findWidgetByName(node, 'control_net_name'), true);
+            toggleWidget(node, findWidgetByName(node, 'strength'), true);
+            toggleWidget(node, findWidgetByName(node, 'preprocessor'), true);
+            toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'), true);
+        } else {
             toggleWidget(node, findWidgetByName(node, 'control_net_name'));
             toggleWidget(node, findWidgetByName(node, 'strength'));
             toggleWidget(node, findWidgetByName(node, 'preprocessor'));
             toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'));
-        }
-        else{
-            toggleWidget(node, findWidgetByName(node, 'use_controlnet'), true);
-
-            if (findWidgetByName(node, 'use_controlnet').value == true){
-                toggleWidget(node, findWidgetByName(node, 'control_net_name'), true);
-                toggleWidget(node, findWidgetByName(node, 'strength'), true);
-                toggleWidget(node, findWidgetByName(node, 'preprocessor'), true);
-                // Ensure the boolean toggle is interactive and visible
-                const preImg = findWidgetByName(node, 'preprocessor_imgs');
-                if (preImg) {
-                    preImg.disabled = false;
-                    toggleWidget(node, preImg, true);
-                }
-            }
-            else{
-                toggleWidget(node, findWidgetByName(node, 'control_net_name'));
-                toggleWidget(node, findWidgetByName(node, 'strength'));
-                toggleWidget(node, findWidgetByName(node, 'preprocessor'));
-                const preImg = findWidgetByName(node, 'preprocessor_imgs');
-                if (preImg) {
-                    preImg.disabled = true;
-                    toggleWidget(node, preImg);
-                }
-            }
         }
 
         // Final recompute to ensure size matches visible widgets
@@ -504,36 +485,18 @@ function handleHiResFixScript(node, widget) {
             }
         });
 
-        if (findWidgetByName(node, 'use_controlnet').value == '_' || findWidgetByName(node, 'use_controlnet').value == false){
-            toggleWidget(node, findWidgetByName(node, 'use_controlnet'));
+        // Always show the main toggle; hide/show dependents based on its value
+        toggleWidget(node, findWidgetByName(node, 'use_controlnet'), true);
+        if (findWidgetByName(node, 'use_controlnet').value === true){
+            toggleWidget(node, findWidgetByName(node, 'control_net_name'), true);
+            toggleWidget(node, findWidgetByName(node, 'strength'), true);
+            toggleWidget(node, findWidgetByName(node, 'preprocessor'), true);
+            toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'), true);
+        } else {
             toggleWidget(node, findWidgetByName(node, 'control_net_name'));
             toggleWidget(node, findWidgetByName(node, 'strength'));
             toggleWidget(node, findWidgetByName(node, 'preprocessor'));
             toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'));
-        }
-        else{
-            toggleWidget(node, findWidgetByName(node, 'use_controlnet'), true);
-
-            if (findWidgetByName(node, 'use_controlnet').value == true){
-                toggleWidget(node, findWidgetByName(node, 'control_net_name'), true);
-                toggleWidget(node, findWidgetByName(node, 'strength'), true);
-                toggleWidget(node, findWidgetByName(node, 'preprocessor'), true);
-                const preImg = findWidgetByName(node, 'preprocessor_imgs');
-                if (preImg) {
-                    preImg.disabled = false;
-                    toggleWidget(node, preImg, true);
-                }
-            }
-            else{
-                toggleWidget(node, findWidgetByName(node, 'control_net_name'));
-                toggleWidget(node, findWidgetByName(node, 'strength'));
-                toggleWidget(node, findWidgetByName(node, 'preprocessor'));
-                const preImg = findWidgetByName(node, 'preprocessor_imgs');
-                if (preImg) {
-                    preImg.disabled = true;
-                    toggleWidget(node, preImg);
-                }
-            }
         }
 
         // Final recompute to ensure size matches visible widgets
