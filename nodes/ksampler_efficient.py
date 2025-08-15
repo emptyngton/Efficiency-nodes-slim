@@ -1085,7 +1085,7 @@ class TSC_KSampler:
                     latent_list.append(samples)
 
                     # Decode the latent tensor if required
-                    image = images if images is not None else vae_decode_latent(vae, samples, vae_decode)
+                    image = images if images is not None else (safe_decode(vae, samples, vae_decode) or TSC_KSampler.empty_image)
 
                     if xy_capsule is not None:
                         xy_capsule.set_result(image, samples)

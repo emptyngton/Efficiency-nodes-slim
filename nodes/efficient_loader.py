@@ -199,6 +199,7 @@ class TSC_EfficientLoader:
         # Retrieve cache numbers
         vae_cache, ckpt_cache, lora_cache, refn_cache = get_cache_numbers("Efficient Loader")
 
+        vae = None
         if lora_name != "None" or lora_stack:
             lora_params = []
             if lora_name != "None":
@@ -208,7 +209,11 @@ class TSC_EfficientLoader:
             model, clip = load_lora(lora_params, ckpt_name, my_unique_id, cache=lora_cache,
                                       ckpt_cache=ckpt_cache, cache_overwrite=True)
             if vae_name == "Baked VAE":
+                # Prefer baked VAE from the loaded checkpoint; fall back to loading if missing
                 vae = get_bvae_by_ckpt_name(ckpt_name)
+                if vae is None:
+                    _, _, baked_vae = load_checkpoint(ckpt_name, my_unique_id, cache=ckpt_cache, cache_overwrite=True)
+                    vae = baked_vae
         else:
             model, clip, vae = load_checkpoint(ckpt_name, my_unique_id, cache=ckpt_cache, cache_overwrite=True)
             lora_params = None
@@ -234,6 +239,11 @@ class TSC_EfficientLoader:
 
         if vae_name != "Baked VAE":
             vae = load_vae(vae_name, my_unique_id, cache=vae_cache, cache_overwrite=True)
+        else:
+            # Ensure we have a VAE object if the checkpoint exposes one baked-in
+            if vae is None:
+                _, _, baked_vae = load_checkpoint(ckpt_name, my_unique_id, cache=ckpt_cache, cache_overwrite=True)
+                vae = baked_vae
 
         dependencies = (vae_name, ckpt_name, clip, clip_skip, refiner_name, refiner_clip, refiner_clip_skip,
                         positive, negative, token_normalization, weight_interpretation, ascore,
