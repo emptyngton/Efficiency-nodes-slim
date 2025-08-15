@@ -28,6 +28,9 @@ function toggleWidget(node, widget, show = false, suffix = "") {
     // Set the widget type and computeSize based on the show flag
     widget.type = show ? origProps[widget.name].origType : HIDDEN_TAG + suffix;
     widget.computeSize = show ? origProps[widget.name].origComputeSize : () => [0, -4];
+    // Explicitly toggle hidden/disabled flags for better layout/interaction
+    try { widget.hidden = !show; } catch (e) {}
+    try { widget.disabled = !show; } catch (e) {}
 
     // Recursively handle linked widgets if they exist
     widget.linkedWidgets?.forEach(w => toggleWidget(node, w, ":" + widget.name, show));
@@ -434,6 +437,7 @@ function handleHiResFixScript(node, widget) {
             const preImg = findWidgetByName(node, 'preprocessor_imgs');
             if (preImg) { try { preImg.disabled = !cnOn; } catch(e){}; toggleWidget(node, preImg, cnOn); }
         }
+        if (!cnOn) { setTimeout(() => { recomputeNodeSize(node); }, 0); }
 
         // Final recompute to ensure size matches visible widgets with padding
         setTimeout(() => { recomputeNodeSize(node); }, 0);
@@ -496,6 +500,7 @@ function handleHiResFixScript(node, widget) {
             const preImg2 = findWidgetByName(node, 'preprocessor_imgs');
             if (preImg2) { try { preImg2.disabled = !cnOn2; } catch(e){}; toggleWidget(node, preImg2, cnOn2); }
         }
+        if (!cnOn2) { setTimeout(() => { recomputeNodeSize(node); }, 0); }
 
         // Final recompute to ensure size matches visible widgets with padding
         setTimeout(() => { recomputeNodeSize(node); }, 0);
