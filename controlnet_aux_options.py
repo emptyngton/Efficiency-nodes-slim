@@ -2,7 +2,7 @@
 # Add controlnet options if have controlnet_aux installed (https://github.com/Fannovel16/comfyui_controlnet_aux)
 # Default widgets: boolean toggle always available; preprocessor dropdown is a placeholder unless the add-on is present
 use_controlnet_widget = ("BOOLEAN", {"default": False})
-preprocessor_widget = (["_"],)
+preprocessor_widget = (["None", "_"],)
 
 printout = "Attempting to add Control Net options to the 'HiRes-Fix Script' Node (comfyui_controlnet_aux add-on)..."
 try:
@@ -11,4 +11,5 @@ try:
     preprocessor_widget = AIO_Preprocessor.INPUT_TYPES()["optional"]["preprocessor"]
     print(f"\r{message('Efficiency Nodes:')} {printout}{success('Success!')}")
 except Exception:
-    print(f"\r{message('Efficiency Nodes:')} {printout}{error('Failed!')}")
+    # Silently keep default placeholder when the add-on is not installed
+    pass

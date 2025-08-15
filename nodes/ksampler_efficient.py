@@ -208,7 +208,7 @@ class TSC_KSampler:
                                 images = vae_decode_latent(vae, samples, vae_decode)
                                 store_ksampler_results("image", my_unique_id, images)
                             # Generate control-net input: prefer AIO_Preprocessor if available, otherwise fall back to raw images
-                            if 'AIO_Preprocessor' in globals() and preprocessor != "_":
+                            if 'AIO_Preprocessor' in globals() and preprocessor not in ("_", "None", None):
                                 cnet_imgs = AIO_Preprocessor().execute(preprocessor, images)[0]
                             else:
                                 cnet_imgs = images
