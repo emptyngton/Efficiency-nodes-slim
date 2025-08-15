@@ -39,7 +39,7 @@ class TSC_KSampler:
         vae = optional_vae
 
         # If vae is not connected, disable vae decoding
-        if vae == (None,) and vae_decode != "false":
+        if (vae is None or vae == (None,)) and vae_decode != "false":
             print(f"{warning('KSampler(Efficient) Warning:')} No vae input detected, proceeding as if vae_decode was false.\n")
             vae_decode = "false"
 
@@ -61,6 +61,16 @@ class TSC_KSampler:
 
         def vae_encode_image(vae, pixels, vae_decode):
             return VAEEncodeTiled().encode(vae,pixels,320)[0] if "tiled" in vae_decode else VAEEncode().encode(vae,pixels)[0]
+
+        def safe_decode(vae, samples, vae_decode):
+            try:
+                if vae is None or vae == (None,):
+                    return None
+                if not isinstance(vae_decode, str) or ("true" not in vae_decode):
+                    return None
+                return vae_decode_latent(vae, samples, vae_decode)
+            except Exception:
+                return None
 
         # ---------------------------------------------------------------------------------------------------------------
         def process_latent_image(model, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent_image,
@@ -205,8 +215,9 @@ class TSC_KSampler:
                         # If cnet_imgs is None, generate new ones
                         if cnet_imgs is None:
                             if images is None:
-                                images = vae_decode_latent(vae, samples, vae_decode)
-                                store_ksampler_results("image", my_unique_id, images)
+                                images = safe_decode(vae, samples, vae_decode)
+                                if images is not None:
+                                    store_ksampler_results("image", my_unique_id, images)
                             # Generate control-net input: prefer AIO_Preprocessor if available, otherwise fall back to raw images
                             if 'AIO_Preprocessor' in globals() and preprocessor not in ("_", "None", None):
                                 cnet_imgs = AIO_Preprocessor().execute(preprocessor, images)[0]
@@ -224,17 +235,21 @@ class TSC_KSampler:
                             images = None # set to None when samples is updated
                     elif upscale_type == "pixel":
                         if images is None:
-                            images = vae_decode_latent(vae, samples, vae_decode)
-                            store_ksampler_results("image", my_unique_id, images)
-                        images = ImageUpscaleWithModel().upscale(pixel_upscale_model, images)[0]
-                        images = ImageScaleBy().upscale(images, "nearest-exact", upscale_by/4)[0]
+                            images = safe_decode(vae, samples, vae_decode)
+                            if images is not None:
+                                store_ksampler_results("image", my_unique_id, images)
+                        if images is not None:
+                            images = ImageUpscaleWithModel().upscale(pixel_upscale_model, images)[0]
+                            images = ImageScaleBy().upscale(images, "nearest-exact", upscale_by/4)[0]
                     elif upscale_type == "both":
                         for _ in range(iterations):
                             if images is None:
-                                images = vae_decode_latent(vae, samples, vae_decode)
-                                store_ksampler_results("image", my_unique_id, images)
-                            images = ImageUpscaleWithModel().upscale(pixel_upscale_model, images)[0]
-                            images = ImageScaleBy().upscale(images, "nearest-exact", upscale_by/4)[0]
+                                images = safe_decode(vae, samples, vae_decode)
+                                if images is not None:
+                                    store_ksampler_results("image", my_unique_id, images)
+                            if images is not None:
+                                images = ImageUpscaleWithModel().upscale(pixel_upscale_model, images)[0]
+                                images = ImageScaleBy().upscale(images, "nearest-exact", upscale_by/4)[0]
 
                             samples = vae_encode_image(vae, images, vae_decode)
                             upscaled_latent_image = latent_upscale_function().upscale(samples, latent_upscaler, 1)[0]
@@ -251,8 +266,8 @@ class TSC_KSampler:
 
                     # Decode image, store if first decode
                     if images is None:
-                        images = vae_decode_latent(vae, samples, vae_decode)
-                        if not any(keys_exist_in_script(key) for key in ["xyplot", "hiresfix"]):
+                        images = safe_decode(vae, samples, vae_decode)
+                        if images is not None and not any(keys_exist_in_script(key) for key in ["xyplot", "hiresfix"]):
                             store_ksampler_results("image", my_unique_id, images)
 
                     # Upscale image
@@ -274,20 +289,21 @@ class TSC_KSampler:
                 # Check if "anim" exists in the script after the main sampling has taken place
                 if keys_exist_in_script("anim"):
                     if images is None:
-                        images = vae_decode_latent(vae, samples, vae_decode)
-                        if not any(keys_exist_in_script(key) for key in ["xyplot", "hiresfix", "tile"]):
+                        images = safe_decode(vae, samples, vae_decode)
+                        if images is not None and not any(keys_exist_in_script(key) for key in ["xyplot", "hiresfix", "tile"]):
                             store_ksampler_results("image", my_unique_id, images)
-                    gifs = AnimateDiffCombine().generate_gif(images, frame_rate, loop_count, format=format,
-                    pingpong=pingpong, save_image=save_image, prompt=prompt, extra_pnginfo=extra_pnginfo)["ui"]["gifs"]
+                    if images is not None:
+                        gifs = AnimateDiffCombine().generate_gif(images, frame_rate, loop_count, format=format,
+                        pingpong=pingpong, save_image=save_image, prompt=prompt, extra_pnginfo=extra_pnginfo)["ui"]["gifs"]
 
                 # ------------------------------------------------------------------------------------------------------
 
                 # Decode image if not yet decoded
                 if "true" in vae_decode:
                     if images is None:
-                        images = vae_decode_latent(vae, samples, vae_decode)
+                        images = safe_decode(vae, samples, vae_decode)
                         # Store decoded image as base image of no script is detected
-                        if all(not keys_exist_in_script(key) for key in ["xyplot", "hiresfix", "tile", "anim"]):
+                        if images is not None and all(not keys_exist_in_script(key) for key in ["xyplot", "hiresfix", "tile", "anim"]):
                             store_ksampler_results("image", my_unique_id, images)
 
                 # Append Control Net Images (if exist)
