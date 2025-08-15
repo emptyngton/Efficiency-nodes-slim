@@ -14,7 +14,8 @@ const doesInputWithNameExist = (node, name) => {
 const HIDDEN_TAG = "tschide";
 // Toggle Widget + change size
 function toggleWidget(node, widget, show = false, suffix = "") {
-    if (!widget || doesInputWithNameExist(node, widget.name)) return;
+    // Only guard on widget presence; allow toggling even if there is an input with same name in new ComfyUI
+    if (!widget) return;
 
     // Store the original properties of the widget if not already stored
     if (!origProps[widget.name]) {
@@ -38,7 +39,7 @@ function toggleWidget(node, widget, show = false, suffix = "") {
 const WIDGET_HEIGHT = 24;
 // Use for Multiline Widget Nodes (aka Efficient Loaders)
 function toggleWidget_2(node, widget, show = false, suffix = "") {
-    if (!widget || doesInputWithNameExist(node, widget.name)) return;
+    if (!widget) return;
     
     const isCurrentlyVisible = widget.type !== HIDDEN_TAG + suffix;
     if (isCurrentlyVisible === show) return; // Early exit if widget is already in the desired state
@@ -409,7 +410,7 @@ function handleHiResFixScript(node, widget) {
             }
         });
 
-        if (findWidgetByName(node, 'use_controlnet').value == '_'){
+        if (findWidgetByName(node, 'use_controlnet').value == '_' || findWidgetByName(node, 'use_controlnet').value == false){
             toggleWidget(node, findWidgetByName(node, 'use_controlnet'));
             toggleWidget(node, findWidgetByName(node, 'control_net_name'));
             toggleWidget(node, findWidgetByName(node, 'strength'));
@@ -474,7 +475,7 @@ function handleHiResFixScript(node, widget) {
             }
         });
 
-        if (findWidgetByName(node, 'use_controlnet').value == '_'){
+        if (findWidgetByName(node, 'use_controlnet').value == '_' || findWidgetByName(node, 'use_controlnet').value == false){
             toggleWidget(node, findWidgetByName(node, 'use_controlnet'));
             toggleWidget(node, findWidgetByName(node, 'control_net_name'));
             toggleWidget(node, findWidgetByName(node, 'strength'));
