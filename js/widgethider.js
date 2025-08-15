@@ -430,7 +430,10 @@ function handleHiResFixScript(node, widget) {
         toggleWidget(node, findWidgetByName(node, 'control_net_name'), cnOn);
         toggleWidget(node, findWidgetByName(node, 'strength'), cnOn);
         toggleWidget(node, findWidgetByName(node, 'preprocessor'), cnOn);
-        toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'), cnOn);
+        {
+            const preImg = findWidgetByName(node, 'preprocessor_imgs');
+            if (preImg) { try { preImg.disabled = !cnOn; } catch(e){}; toggleWidget(node, preImg, cnOn); }
+        }
 
         // Final recompute to ensure size matches visible widgets with padding
         setTimeout(() => { recomputeNodeSize(node); }, 0);
@@ -451,7 +454,10 @@ function handleHiResFixScript(node, widget) {
         toggleWidget(node, findWidgetByName(node, 'control_net_name'));
         toggleWidget(node, findWidgetByName(node, 'strength'));
         toggleWidget(node, findWidgetByName(node, 'preprocessor'));
-        toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'));
+        {
+            const preImgPix = findWidgetByName(node, 'preprocessor_imgs');
+            if (preImgPix) { try { preImgPix.disabled = true; } catch(e){}; toggleWidget(node, preImgPix); }
+        }
 
         toggleWidget(node, findWidgetByName(node, 'pixel_upscaler'), true);
 
@@ -486,7 +492,10 @@ function handleHiResFixScript(node, widget) {
         toggleWidget(node, findWidgetByName(node, 'control_net_name'), cnOn2);
         toggleWidget(node, findWidgetByName(node, 'strength'), cnOn2);
         toggleWidget(node, findWidgetByName(node, 'preprocessor'), cnOn2);
-        toggleWidget(node, findWidgetByName(node, 'preprocessor_imgs'), cnOn2);
+        {
+            const preImg2 = findWidgetByName(node, 'preprocessor_imgs');
+            if (preImg2) { try { preImg2.disabled = !cnOn2; } catch(e){}; toggleWidget(node, preImg2, cnOn2); }
+        }
 
         // Final recompute to ensure size matches visible widgets with padding
         setTimeout(() => { recomputeNodeSize(node); }, 0);
