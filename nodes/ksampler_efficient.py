@@ -1796,7 +1796,10 @@ class TSC_KSampler:
             xy_plot_image = pil2tensor(background)
 
          # Generate the preview_images
-        preview_images = PreviewImage().save_images(xy_plot_image)["ui"]["images"]
+        try:
+            preview_images = PreviewImage().save_images(xy_plot_image)["ui"]["images"]
+        except Exception:
+            preview_images = list()
 
         # Generate output_images
         output_images = torch.stack([tensor.squeeze() for tensor in image_tensor_list])
