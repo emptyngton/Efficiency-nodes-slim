@@ -143,7 +143,7 @@ class TSC_HighRes_Fix:
 
         # Construct the script output
         script = script or {}
-        # If preprocessor is unavailable ("_"), keep it neutral so downstream uses skip it gracefully
+        # Normalize preprocessor; accept "None" to skip
         safe_preprocessor = None if preprocessor in ("_", "None", None) else preprocessor
         script["hiresfix"] = (upscale_type, latent_upscaler, upscale_by, use_same_seed, seed, hires_steps,
                               denoise, iterations, control_net, strength, safe_preprocessor, preprocessor_imgs,

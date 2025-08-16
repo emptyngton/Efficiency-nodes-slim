@@ -8,7 +8,10 @@ printout = "Attempting to add Control Net options to the 'HiRes-Fix Script' Node
 try:
     with suppress_output():
         AIO_Preprocessor = getattr(import_module("comfyui_controlnet_aux.__init__"), 'AIO_Preprocessor')
-    preprocessor_widget = AIO_Preprocessor.INPUT_TYPES()["optional"]["preprocessor"]
+    # Ensure "None" is always an allowed option even when the add-on is present
+    _addon_widget = AIO_Preprocessor.INPUT_TYPES()["optional"]["preprocessor"]
+    _opts = list(_addon_widget[0]) if isinstance(_addon_widget, tuple) else list(_addon_widget)
+    preprocessor_widget = (["None"] + _opts,)
     print(f"\r{message('Efficiency Nodes:')} {printout}{success('Success!')}")
 except Exception:
     # Silently keep default placeholder when the add-on is not installed
