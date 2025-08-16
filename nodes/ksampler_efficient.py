@@ -35,11 +35,11 @@ class TSC_KSampler:
                optional_vae=(None,), script=None, add_noise=None, start_at_step=None, end_at_step=None,
                return_with_leftover_noise=None, sampler_type="regular"):
         
-        # Rename the vae variable
-        vae = optional_vae
+        # Normalize VAE input; unwrap (VAE,) to VAE
+        vae = optional_vae[0] if isinstance(optional_vae, tuple) and len(optional_vae) == 1 else optional_vae
 
-        # If vae is not connected, disable vae decoding
-        if (vae is None or vae == (None,)) and vae_decode != "false":
+        # If VAE effectively missing, disable VAE decoding
+        if (vae is None) and vae_decode != "false":
             print(f"{warning('KSampler(Efficient) Warning:')} No vae input detected, proceeding as if vae_decode was false.\n")
             vae_decode = "false"
 
@@ -64,7 +64,7 @@ class TSC_KSampler:
 
         def safe_decode(vae, samples, vae_decode):
             try:
-                if vae is None or vae == (None,):
+                if vae is None:
                     return None
                 if not isinstance(vae_decode, str) or ("true" not in vae_decode):
                     return None
@@ -74,7 +74,7 @@ class TSC_KSampler:
 
         def safe_encode(vae, pixels, vae_decode):
             try:
-                if vae is None or vae == (None,):
+                if vae is None:
                     return None
                 # Allow encode regardless of vae_decode choice; guard type
                 return vae_encode_image(vae, pixels, vae_decode if isinstance(vae_decode, str) else "true")
