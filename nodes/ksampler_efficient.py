@@ -333,11 +333,13 @@ class TSC_KSampler:
 
                 # Define preview images
                 if keys_exist_in_script("anim"):
-                    preview = {"gifs": gifs, "images": list()}
+                    preview = {"gifs": gifs or list(), "images": list()}
                 elif preview_method == "none" or (preview_method == "vae_decoded_only" and vae_decode == "false"):
                     preview = {"images": list()}
                 elif images is not None:
                     preview = PreviewImage().save_images(images, prompt=prompt, extra_pnginfo=extra_pnginfo)["ui"]
+                else:
+                    preview = {"images": list()}
 
                 # Define a dummy output image
                 if images is None and vae_decode == "false":

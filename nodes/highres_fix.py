@@ -18,6 +18,10 @@ class TSC_HighRes_Fix:
     @classmethod
     def INPUT_TYPES(cls):
 
+        # Dynamic controlnet selector: dropdown when models exist, else free string
+        _cn_list = folder_paths.get_filename_list("controlnet")
+        cn_selector = (["None"] + _cn_list,) if _cn_list else ("STRING", {"default": "None"})
+
         return {"required": {"upscale_type": (["latent","pixel","both"],),
                              "hires_ckpt_name": (["(use same)"] + folder_paths.get_filename_list("checkpoints"),),
                              "latent_upscaler": (cls.latent_upscalers,),
@@ -29,7 +33,7 @@ class TSC_HighRes_Fix:
                              "denoise": ("FLOAT", {"default": .56, "min": 0.00, "max": 1.00, "step": 0.01}),
                              "iterations": ("INT", {"default": 1, "min": 0, "max": 5, "step": 1}),
                              "use_controlnet": use_controlnet_widget,
-                             "control_net_name": ("STRING", {"default": "None"}),
+                             "control_net_name": cn_selector,
                              "strength": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.01}),
                              "preprocessor": preprocessor_widget,
                              "preprocessor_imgs": ("BOOLEAN", {"default": False})
