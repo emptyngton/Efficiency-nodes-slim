@@ -29,7 +29,7 @@ class TSC_HighRes_Fix:
                              "denoise": ("FLOAT", {"default": .56, "min": 0.00, "max": 1.00, "step": 0.01}),
                              "iterations": ("INT", {"default": 1, "min": 0, "max": 5, "step": 1}),
                              "use_controlnet": use_controlnet_widget,
-                             "control_net_name": (["None"] + folder_paths.get_filename_list("controlnet"),),
+                             "control_net_name": ("STRING", {"default": "None"}),
                              "strength": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.01}),
                              "preprocessor": preprocessor_widget,
                              "preprocessor_imgs": ("BOOLEAN", {"default": False})
@@ -130,8 +130,16 @@ class TSC_HighRes_Fix:
                         load_checkpoint(hires_ckpt_name, my_unique_id, output_vae=False, cache=1, cache_overwrite=True)
 
         control_net = None
-        if use_controlnet is True and control_net_name is not None and control_net_name != "None":
-            control_net = ControlNetLoader().load_controlnet(control_net_name)[0]
+        if use_controlnet is True and control_net_name and control_net_name != "None":
+            try:
+                control_net = ControlNetLoader().load_controlnet(control_net_name)[0]
+            except Exception:
+                # Allow absolute paths or nested folders by trying to resolve basename via folder_paths
+                try:
+                    basename = os.path.basename(control_net_name)
+                    control_net = ControlNetLoader().load_controlnet(basename)[0]
+                except Exception:
+                    control_net = None
 
         # Construct the script output
         script = script or {}
