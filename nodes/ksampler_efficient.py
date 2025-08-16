@@ -72,6 +72,15 @@ class TSC_KSampler:
             except Exception:
                 return None
 
+        def safe_encode(vae, pixels, vae_decode):
+            try:
+                if vae is None or vae == (None,):
+                    return None
+                # Allow encode regardless of vae_decode choice; guard type
+                return vae_encode_image(vae, pixels, vae_decode if isinstance(vae_decode, str) else "true")
+            except Exception:
+                return None
+
         # ---------------------------------------------------------------------------------------------------------------
         def process_latent_image(model, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent_image,
                                 denoise, sampler_type, add_noise, start_at_step, end_at_step, return_with_leftover_noise,
@@ -251,7 +260,9 @@ class TSC_KSampler:
                                 images = ImageUpscaleWithModel().upscale(pixel_upscale_model, images)[0]
                                 images = ImageScaleBy().upscale(images, "nearest-exact", upscale_by/4)[0]
 
-                            samples = vae_encode_image(vae, images, vae_decode)
+                            tmp = safe_encode(vae, images, vae_decode)
+                            if tmp is not None:
+                                samples = tmp
                             upscaled_latent_image = latent_upscale_function().upscale(samples, latent_upscaler, 1)[0]
                             samples = KSampler().sample(latent_upscale_model, hires_seed, hires_steps, cfg, sampler_name, scheduler,
                                                                 positive, negative, upscaled_latent_image, denoise=hires_denoise)[0]
@@ -272,7 +283,9 @@ class TSC_KSampler:
 
                     # Upscale image
                     upscaled_image = ImageScaleBy().upscale(images, "nearest-exact", upscale_by)[0]
-                    upscaled_latent = vae_encode_image(vae, upscaled_image, vae_decode)
+                    tmp2 = safe_encode(vae, upscaled_image, vae_decode)
+                    if tmp2 is not None:
+                        upscaled_latent = tmp2
 
                     # If using Control Net, Apply Control Net using upscaled_image and loaded control_net
                     if tile_controlnet is not None:
